@@ -4,6 +4,7 @@
   <version>_PLACEHOLDER_</version>
   <vendor url="https://project-url">Author</vendor>
   <idea-version since-build="_PLACEHOLDER_" until-build="_PLACEHOLDER_" />
+  <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.rider</depends>
 
   <description>
@@ -11,5 +12,21 @@
 <p>Sample description</p>
 ]]>
   </description>
+
+
+  <actions>
+    <group>
+      <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+      <action id="rider.sample.popup.check" class="org.rider.plugins.sampleriderplugin.CheckResultDialogAction"
+              text="CheckResultDialogAction"/>
+      <action id="rider.sample.signal.source" class="org.rider.plugins.sampleriderplugin.SignalWithSourceAction"
+              text="SignalWithSourceAction"/>
+      <action id="rider.sample.signal.property" class="org.rider.plugins.sampleriderplugin.SignalWithPropertyChangeAction"
+              text="SignalWithPropertyChangeAction"/>
+      <action id="rider.sample.rpc" class="org.rider.plugins.sampleriderplugin.RpcDialogAction"
+              text="RpcDialogAction"/>
+    </group>
+  </actions>
+
 
 </idea-plugin>

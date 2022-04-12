@@ -3,15 +3,20 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.5.30'
-    id 'org.jetbrains.intellij' version '1.1.4'     // https://github.com/JetBrains/gradle-intellij-plugin/releases
-    id 'com.jetbrains.rdgen' version '0.213.391'    // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
+    id 'org.jetbrains.kotlin.jvm' version '1.6.0'
+    id 'org.jetbrains.intellij' version '1.5.2'     // https://github.com/JetBrains/gradle-intellij-plugin/releases
+    id 'com.jetbrains.rdgen' version '2022.1.2'    // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
+}
+
+
+repositories {
+    maven { url("https://cache-redirector.jetbrains.com/maven-central") }
 }
 
 ext {
     isWindows = Os.isFamily(Os.FAMILY_WINDOWS)
     rdLibDirectory = {
-        new File(intellij.getIdeaDependency(project).classes, "lib/rd")
+        new File(tasks.setupDependencies.idea.get().classes, "lib/rd")
     }
 }
 
@@ -111,22 +116,29 @@ intellij {
     instrumentCode = false
     // TODO: add plugins
     // plugins = ["uml", "com.jetbrains.ChooseRuntime:1.0.9"]
+
+    intellijRepository = "https://cache-redirector.jetbrains.com/intellij-repository"
+
+    plugins = ["rider-plugins-appender"]
 }
 
 runIde {
     // Match Rider's default heap size of 1.5Gb (default for runIde is 512Mb)
-    maxHeapSize = "1500m"
+    maxHeapSize = "2000m"
 
     // Rider's backend doesn't support dynamic plugins. It might be possible to work with auto-reload of the frontend
     // part of a plugin, but there are dangers about keeping plugins in sync
     autoReloadPlugins = false
 
+//    jbrVersion.set("11_0_14_1-b1751.46")
+//    jbrVariant.set("sdk")
     // gradle-intellij-plugin will download the default version of the JBR for the snapshot. Update if required
     // jbrVersion = "jbr_jcef-11_0_6b765.40" // https://confluence.jetbrains.com/display/JBR/Release+notes
 }
 
 rdgen {
-    def modelDir = new File(rootDir, "protocol/src/main/kotlin/model")
+//    def modelDir = new File(rootDir, "protocol/src/main/kotlin/model")
+    def modelDir = new File(rootDir, "protocol/src/main/kotlin")
     def csOutput = new File(rootDir, "src/dotnet/${DotnetPluginId}/Rider")
     def ktOutput = new File(rootDir, "src/rider/main/kotlin/${RiderPluginId.replace('.','/').toLowerCase()}")
 
@@ -134,7 +146,7 @@ rdgen {
     classpath {
         "${rdLibDirectory()}/rider-model.jar"
     }
-    sources "${modelDir}/rider"
+    sources "${modelDir}/model/rider"
     hashFolder = "${buildDir}"
     packages = "model.rider"
 
@@ -142,7 +154,7 @@ rdgen {
         language = "kotlin"
         transform = "asis"
         root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-        namespace = "com.jetbrains.rider.model"
+        namespace = "org.rider.plugins.sample.model"
         directory = "$ktOutput"
     }
 
@@ -150,7 +162,7 @@ rdgen {
         language = "csharp"
         transform = "reversed"
         root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-        namespace = "JetBrains.Rider.Model"
+        namespace = "ReSharperPlugin.SampleRiderPlugin"
         directory = "$csOutput"
     }
 }
@@ -199,4 +211,9 @@ publishPlugin {
             workingDir rootDir
         }
     }
+}
+
+
+buildSearchableOptions{
+    enabled = false
 }
