@@ -17,14 +17,14 @@ execute runIde task
 
 there are 4 actions on the editor context menu.
 
-click SignalWithPropertyChangeAction: nothing should happen, its just sending a signal to resharper, resharper should update a value on the model. (this signal works only the first time, need to check why,but its good for now)
-click CheckResultDialogAction: you should see the value in the dialog.
+click SignalWithPropertyChangeAction: nothing should happen, its just sending a signal to resharper, resharper should update a value on the model. (this signal works only the first time, need to check why,but its good for now).</br>
+click CheckResultDialogAction: you should see the value in the dialog.</br>
 
-click SignalWithSourceAction: nothing should happen
-click CheckResultDialogAction: you should see the value in the dialog.
-repeate the two lines above as many times , the text should change every time.
+click SignalWithSourceAction: nothing should happen.</br>
+click CheckResultDialogAction: you should see the value in the dialog.</br>
+repeate the two lines above as many times , the text should change every time.</br>
 
-click RpcDialogAction: a dialog should open with text "Result from RPC true", 'true' is the return from the RPC call, boolean is the most simple.
+click RpcDialogAction: a dialog should open with text "Result from RPC true", 'true' is the return from the RPC call, boolean is the most simple.</br>
 
 
 There is much more to the protocol but that's the general idea.
